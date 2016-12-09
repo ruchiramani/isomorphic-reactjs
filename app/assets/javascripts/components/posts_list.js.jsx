@@ -1,6 +1,18 @@
 var PostsList = React.createClass({
   getInitialState: function(){
-    return {posts: this.props.initialPosts};
+    return JSON.parse(this.props.presenter);
+
+  },
+  handlePostSubmit: function( formData, action){
+    $.ajax({
+      data: formData,
+      url: action,
+      type: "POST",
+      dataType: "json",
+      success: function(data) {
+        this.setState({posts: data});
+      }.bind(this)
+    });
   },
    render: function() {
      var posts = this.state.posts.map(function(post){
@@ -9,7 +21,10 @@ var PostsList = React.createClass({
      return (
        <div className="posts">
         {posts}
+       <h2> Add a post </h2>
+        <PostForm form={this.state.form} onPostSubmit={this.handlePostSubmit} />
         </div>
+
      );
    }
 });
